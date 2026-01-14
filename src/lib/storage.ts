@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export const STORAGE_KEYS = {
   apps: "jobtrack.apps.v1",
@@ -18,7 +18,6 @@ export function loadJson<T>(key: string, fallback: T): T {
     if (!raw) return fallback;
     return JSON.parse(raw) as T;
   } catch {
-    // If JSON is corrupted, return fallback (safe recovery)
     return fallback;
   }
 }
@@ -30,15 +29,19 @@ export function saveJson<T>(key: string, value: T) {
 
 /**
  * useLocalStorageState
- * - Beginner-friendly persistence hook
- * - Reads once on mount (safe)
- * - Writes whenever state changes
+ * - Reads once on mount
+ * - Avoids writing back immediately on first render
+ * - Still writes whenever state changes after that
  */
 export function useLocalStorageState<T>(key: string, initial: T) {
   const [state, setState] = useState<T>(() => loadJson<T>(key, initial));
+  const didInit = useRef(false);
 
   useEffect(() => {
-    // Keep storage in sync with React state
+    if (!didInit.current) {
+      didInit.current = true;
+      return;
+    }
     saveJson(key, state);
   }, [key, state]);
 

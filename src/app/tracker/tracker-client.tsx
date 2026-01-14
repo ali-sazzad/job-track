@@ -295,7 +295,7 @@ export function TrackerClient() {
   const filteredToZero = apps.length > 0 && filtered.length === 0;
 
   return (
-    <div className="flex flex-col gap-[var(--jt-space)]">
+    <div className="flex flex-col gap-(--jt-space)">
       {/* Header */}
       <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div>
@@ -551,7 +551,7 @@ export function TrackerClient() {
               <select
                 className="h-10 w-full rounded-xl border border-input bg-background px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
                 value={form.status}
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                 
                 onChange={(e) => setForm((p) => ({ ...p, status: e.target.value as any }))}
                 aria-invalid={!!errors.status}
               >

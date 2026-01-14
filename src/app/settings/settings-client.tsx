@@ -118,7 +118,7 @@ export function SettingsClient() {
   }
 
   return (
-    <div className="flex flex-col gap-[var(--jt-space)]">
+    <div className="flex flex-col gap-(--jt-space)">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Settings</h1>
         <p className="mt-1 text-muted-foreground">
@@ -136,7 +136,7 @@ export function SettingsClient() {
             </p>
           </CardHeader>
 
-          <CardContent className="flex flex-col gap-[var(--jt-space-sm)]">
+          <CardContent className="flex flex-col gap-(--jt-space-sm)">
             <div className="flex items-center justify-between rounded-2xl border bg-card px-4 py-3">
               <div>
                 <p className="text-sm font-semibold">Density</p>
@@ -181,7 +181,7 @@ export function SettingsClient() {
             </p>
           </CardHeader>
 
-          <CardContent className="flex flex-col gap-[var(--jt-space-sm)]">
+          <CardContent className="flex flex-col gap-(--jt-space-sm)">
             <div className="flex items-center justify-between rounded-2xl border bg-card px-4 py-3">
               <div>
                 <p className="text-sm font-semibold">Export</p>

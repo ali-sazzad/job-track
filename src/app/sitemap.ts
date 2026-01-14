@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = "https://example.com"; // replace after deploy
+  const base = "https://job-track-ruby.vercel.app/"; // replace after deploy
 
   return [
     { url: `${base}/`, lastModified: new Date() },

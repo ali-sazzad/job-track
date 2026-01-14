@@ -1,4 +1,5 @@
 # JobTrack — Job Application Tracker (Next.js + TypeScript + shadcn/ui)
+View here live: https://job-track-ruby.vercel.app/
 
 JobTrack is a frontend-only job application tracker designed to feel like a real internal tool.  
 It supports CRUD, fast filtering, lightweight insights, and persistent storage using localStorage — deployable to Vercel.

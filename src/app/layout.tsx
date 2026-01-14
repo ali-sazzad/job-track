@@ -12,7 +12,7 @@ const SITE_DESC =
   "A recruiter-friendly job application tracker with pipeline, filters, insights, and local persistence.";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://example.com"), // replace with your Vercel URL after deploy
+  metadataBase: new URL("https://job-track-ruby.vercel.app/"), // replace with your Vercel URL after deploy
   title: {
     default: SITE_NAME,
     template: `%s • ${SITE_NAME}`,

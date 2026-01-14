@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 
 export default function robots(): MetadataRoute.Robots {
-  const base = "https://example.com"; // replace after deploy
+  const base = "https://job-track-ruby.vercel.app/"; // replace after deploy
 
   return {
     rules: [

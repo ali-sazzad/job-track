@@ -3,13 +3,20 @@ export const SITE_NAME = "JobTrack";
 export const SITE_DESC =
   "A recruiter-friendly job application tracker with pipeline, filters, insights, and local persistence.";
 
-/** Set NEXT_PUBLIC_SITE_URL in your deployment; falls back to the Vercel URL, then localhost. */
-export const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL ??
-  (process.env.VERCEL_PROJECT_PRODUCTION_URL
-    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-    : "http://localhost:3000")
-).replace(/\/+$/, "");
+/**
+ * Canonical public URL (GitHub Pages, the repo homepage). The Vercel deployment
+ * points its canonical/sitemap here too, so search engines see one site.
+ * Override with NEXT_PUBLIC_SITE_URL if the primary host changes.
+ */
+export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://ali-sazzad.github.io/job-track").replace(
+  /\/+$/,
+  "",
+);
+
+/** Absolute canonical URL for an app route, in the trailing-slash form GitHub Pages serves. */
+export function canonicalUrl(route: string) {
+  return `${SITE_URL}${route === "/" ? "/" : `${route.replace(/\/+$/, "")}/`}`;
+}
 
 export const NAV = [
   { href: "/", label: "Home" },

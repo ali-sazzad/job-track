@@ -1,4 +1,12 @@
-import { STATUS_ORDER, type JobApplication, type JobStatus, type SortMode } from "@/lib/types";
+import {
+  STATUS_ORDER,
+  parseApps,
+  parsePrefs,
+  type JobApplication,
+  type JobStatus,
+  type SortMode,
+  type UserPrefs,
+} from "@/lib/types";
 
 const DAY = 1000 * 60 * 60 * 24;
 
@@ -159,4 +167,46 @@ export function downloadTextFile(filename: string, content: string, mime = "text
 
   // Revoke on the next tick so the download has started in every browser.
   setTimeout(() => URL.revokeObjectURL(url), 0);
+}
+
+/**
+ * Parse a JobTrack JSON export (the `{ exportedAt, apps, prefs }` shape from
+ * Settings, or a bare array of applications). Invalid entries are dropped by
+ * the same guards used for localStorage. Throws if the file isn't usable.
+ */
+export function parseImport(text: string): { apps: JobApplication[]; prefs: UserPrefs | null } {
+  let raw: unknown;
+  try {
+    raw = JSON.parse(text);
+  } catch {
+    throw new Error("That file isn't valid JSON.");
+  }
+
+  const isExport = !!raw && typeof raw === "object" && !Array.isArray(raw);
+  const rawApps = isExport ? (raw as Record<string, unknown>).apps : raw;
+  if (!Array.isArray(rawApps)) throw new Error("No applications found in that file.");
+
+  const apps = parseApps(rawApps);
+  if (rawApps.length > 0 && apps.length === 0) throw new Error("None of the applications in that file were valid.");
+
+  const rawPrefs = isExport ? (raw as Record<string, unknown>).prefs : undefined;
+  return { apps, prefs: rawPrefs ? parsePrefs(rawPrefs) : null };
+}
+
+/** Merge imported applications by id; on a clash the most recently updated copy wins. */
+export function mergeApplications(current: JobApplication[], incoming: JobApplication[]) {
+  const byId = new Map(current.map((a) => [a.id, a]));
+  let added = 0;
+  let updated = 0;
+  for (const app of incoming) {
+    const existing = byId.get(app.id);
+    if (!existing) {
+      byId.set(app.id, app);
+      added++;
+    } else if (app.updatedAt > existing.updatedAt) {
+      byId.set(app.id, app);
+      updated++;
+    }
+  }
+  return { merged: [...byId.values()], added, updated };
 }

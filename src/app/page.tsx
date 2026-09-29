@@ -4,8 +4,10 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { PipelinePreview } from "@/components/pipeline-preview";
+import { canonicalUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
+  alternates: { canonical: canonicalUrl("/") },
   title: { absolute: "JobTrack — Job application tracker" },
   description:
     "JobTrack helps you manage your job applications with a clean pipeline, fast filtering, and insights.",

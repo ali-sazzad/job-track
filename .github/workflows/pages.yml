@@ -32,7 +32,6 @@ jobs:
         run: npm run build
         env:
           GITHUB_PAGES: "true"
-          NEXT_PUBLIC_SITE_URL: https://ali-sazzad.github.io/job-track
 
       - uses: actions/upload-pages-artifact@v5
         with:

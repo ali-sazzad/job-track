@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Skeleton } from "@/components/ui/skeleton";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { NativeSelect } from "@/components/native-select";
-import { downloadTextFile, toCsv } from "@/lib/jobs";
+import { downloadTextFile, mergeApplications, parseImport, toCsv } from "@/lib/jobs";
 import { STORAGE_KEYS, removeStorage, useApplications, useHydrated, usePrefs } from "@/lib/storage";
 import { SORT_LABEL, type Density, type SortMode } from "@/lib/types";
 
@@ -30,6 +30,8 @@ export function SettingsClient() {
   const [apps, setApps] = useApplications();
   const [prefs, setPrefs] = usePrefs();
   const { theme, setTheme } = useTheme();
+
+  const importInputRef = React.useRef<HTMLInputElement>(null);
 
   const appCount = apps.length;
 
@@ -52,6 +54,28 @@ export function SettingsClient() {
   function exportCsv() {
     downloadTextFile("jobtrack-applications.csv", toCsv(apps), "text/csv;charset=utf-8");
     toast.success("Exported CSV.");
+  }
+
+  async function importJson(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = ""; // allow re-importing the same file
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("That file is too large (max 5 MB).");
+      return;
+    }
+
+    try {
+      const { apps: incoming, prefs: importedPrefs } = parseImport(await file.text());
+      const { merged, added, updated } = mergeApplications(apps, incoming);
+      setApps(merged);
+      if (importedPrefs) setPrefs(importedPrefs);
+      toast.success("Import complete.", {
+        description: `${added} added, ${updated} updated, ${incoming.length - added - updated} already up to date.`,
+      });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Import failed.");
+    }
   }
 
   function clearAppsOnly() {
@@ -161,6 +185,24 @@ export function SettingsClient() {
               </Button>
               <Button variant="outline" onClick={exportCsv} disabled={!hydrated || appCount === 0}>
                 CSV
+              </Button>
+            </Row>
+
+            <Row
+              title="Import"
+              description="Load a JSON export, e.g. to move data between the Vercel and GitHub Pages sites. Merges with what's here."
+            >
+              <input
+                ref={importInputRef}
+                type="file"
+                accept="application/json,.json"
+                className="sr-only"
+                tabIndex={-1}
+                aria-hidden="true"
+                onChange={importJson}
+              />
+              <Button variant="secondary" onClick={() => importInputRef.current?.click()} disabled={!hydrated}>
+                Import JSON
               </Button>
             </Row>
 

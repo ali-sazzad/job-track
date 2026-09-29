@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { scrollToTop } from "@/lib/scroll";
 import { NAV } from "@/lib/site";
@@ -62,6 +63,7 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-2">
+          <ThemeToggle />
           <Button asChild variant="secondary" className="hidden sm:inline-flex">
             <Link href="/insights">View insights</Link>
           </Button>

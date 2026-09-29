@@ -1,6 +1,6 @@
 # JobTrack — Job Application Tracker (Next.js + TypeScript + shadcn/ui)
 
-Live: https://job-track-ruby.vercel.app/
+Live: https://job-track-ruby.vercel.app/ (Vercel) · https://ali-sazzad.github.io/job-track/ (GitHub Pages)
 
 A frontend-only job application tracker designed to feel like a real internal tool: CRUD, fast filtering, a pipeline board, lightweight insights, and persistent storage in `localStorage`. Deployable to Vercel with zero config.
 
@@ -68,3 +68,14 @@ Optional: set `NEXT_PUBLIC_SITE_URL` to your production URL for metadata, robots
 - Sitemap and robots URLs no longer contain a double slash.
 - Insights bars show each status's share of the total, and the missing "Rejected" KPI is added.
 - Factory reset really removes the keys. The original immediately wrote the defaults back.
+
+## Deployment
+
+- **Vercel** builds every push to `main` as a normal Next.js app.
+- **GitHub Pages**: `.github/workflows/pages.yml` builds a static export on every push to `main` and deploys it to `https://ali-sazzad.github.io/job-track/`. The export is only switched on when `GITHUB_PAGES=true`, which sets `output: "export"`, `basePath: "/job-track"` and `trailingSlash` in `next.config.ts`, so it never affects Vercel. The app keeps all its data in the browser, so the static site works the same as the Vercel one. The two sites use separate origins, so each has its own saved data.
+
+To preview the Pages build locally:
+
+```bash
+GITHUB_PAGES=true npm run build   # writes ./out, served under /job-track/
+```

@@ -1,12 +1,27 @@
+import type { Metadata } from "next";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-export const metadata = {
-  title: "Home",
+import { Button } from "@/components/ui/button";
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { PipelinePreview } from "@/components/pipeline-preview";
+
+export const metadata: Metadata = {
+  title: { absolute: "JobTrack — Job application tracker" },
   description:
     "JobTrack helps you manage your job applications with a clean pipeline, fast filtering, and insights.",
 };
+
+const HIGHLIGHTS = [
+  { title: "Pipeline UI", desc: "Clear statuses + scan-friendly layout" },
+  { title: "Fast controls", desc: "Search + filter + sort client-side" },
+  { title: "Good UX states", desc: "Empty / filtered / success handling" },
+];
+
+const STEPS = [
+  { title: "1) Add applications", desc: "Company, role, status, link, notes — validated and clean." },
+  { title: "2) Filter your pipeline", desc: "Search + filter + sort instantly (no backend)." },
+  { title: "3) Review insights", desc: "Lightweight analytics to stay consistent and focused." },
+];
 
 export default function HomePage() {
   return (
@@ -18,107 +33,70 @@ export default function HomePage() {
             Frontend-only • LocalStorage • Recruiter-readable
           </p>
 
-          <h1 className="mt-4 text-balance text-4xl font-semibold tracking-tight sm:text-5xl">
+          <h1 className="mt-4 text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
             A job application tracker that feels like a real internal tool.
           </h1>
 
-          <p className="mt-4 max-w-prose text-pretty text-base text-muted-foreground sm:text-lg">
-            Add applications, update statuses, filter instantly, and review
-            lightweight insights. Built with Next.js + TypeScript + Tailwind +
-            shadcn/ui — no backend required.
+          <p className="mt-4 max-w-prose text-base text-pretty text-muted-foreground sm:text-lg">
+            Add applications, update statuses, filter instantly, and review lightweight insights. Built with Next.js +
+            TypeScript + Tailwind + shadcn/ui — no backend required.
           </p>
 
           <div className="mt-6 flex flex-wrap gap-3">
-            <Button asChild className="min-w-40">
+            <Button asChild size="lg" className="min-w-40">
               <Link href="/tracker">Start tracking</Link>
             </Button>
-            <Button asChild variant="outline" className="min-w-40">
+            <Button asChild size="lg" variant="outline" className="min-w-40">
               <Link href="/insights">See insights</Link>
             </Button>
           </div>
 
-          <div className="mt-8 grid gap-3 sm:grid-cols-3">
-            {[
-              { k: "Pipeline UI", v: "Clear statuses + scan-friendly layout" },
-              { k: "Fast controls", v: "Search + filter + sort client-side" },
-              { k: "Good UX states", v: "Empty / error / success handling" },
-            ].map((x) => (
-              <Card key={x.k} className="rounded-2xl">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm">{x.k}</CardTitle>
-                </CardHeader>
-                <CardContent className="text-sm text-muted-foreground">
-                  {x.v}
-                </CardContent>
-              </Card>
+          <ul className="mt-8 grid gap-3 sm:grid-cols-3">
+            {HIGHLIGHTS.map((x) => (
+              <li key={x.title}>
+                <Card className="h-full gap-2 rounded-2xl py-5">
+                  <CardHeader className="px-5">
+                    <CardTitle className="text-sm">{x.title}</CardTitle>
+                    <CardDescription>{x.desc}</CardDescription>
+                  </CardHeader>
+                </Card>
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
 
-        {/* Right preview */}
         <div className="lg:col-span-5">
-          <Card className="rounded-3xl">
-            <CardHeader>
-              <CardTitle className="text-base">Preview</CardTitle>
-              <p className="text-sm text-muted-foreground">
-                Sprint 2 will wire real CRUD + persistence.
-              </p>
-            </CardHeader>
-            <CardContent className="grid gap-3">
-              {["Applied", "Interview", "Offer"].map((label) => (
-                <div
-                  key={label}
-                  className="flex items-center justify-between rounded-2xl border bg-card px-4 py-3"
-                >
-                  <p className="text-sm font-semibold">{label}</p>
-                  <span className="text-xs text-muted-foreground">0</span>
-                </div>
-              ))}
-              <Button asChild variant="secondary" className="w-full">
-                <Link href="/tracker">Go to tracker</Link>
-              </Button>
-            </CardContent>
-          </Card>
+          <PipelinePreview />
         </div>
       </section>
 
       {/* How it works */}
-      <section className="grid gap-4 md:grid-cols-3">
-        {[
-          {
-            title: "1) Add applications",
-            desc: "Company, role, status, link, notes — validated and clean.",
-          },
-          {
-            title: "2) Filter your pipeline",
-            desc: "Search + filter + sort instantly (no backend).",
-          },
-          {
-            title: "3) Review insights",
-            desc: "Lightweight analytics to stay consistent and focused.",
-          },
-        ].map((x) => (
-          <Card key={x.title} className="rounded-3xl">
-            <CardHeader>
-              <CardTitle className="text-base">{x.title}</CardTitle>
-              <p className="text-sm text-muted-foreground">{x.desc}</p>
-            </CardHeader>
-          </Card>
-        ))}
+      <section aria-labelledby="how-it-works">
+        <h2 id="how-it-works" className="sr-only">
+          How it works
+        </h2>
+        <ol className="grid gap-4 md:grid-cols-3">
+          {STEPS.map((x) => (
+            <li key={x.title}>
+              <Card className="h-full rounded-3xl">
+                <CardHeader>
+                  <CardTitle className="text-base">{x.title}</CardTitle>
+                  <CardDescription>{x.desc}</CardDescription>
+                </CardHeader>
+              </Card>
+            </li>
+          ))}
+        </ol>
       </section>
 
       {/* CTA */}
       <section className="rounded-3xl border bg-card p-8 shadow-sm sm:p-10">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="max-w-2xl">
-            <h2 className="text-2xl font-semibold tracking-tight">
-              Ready to use the tracker?
-            </h2>
-            <p className="mt-2 text-muted-foreground">
-              Everything saves locally — refresh-safe and demo-friendly.
-            </p>
+            <h2 className="text-2xl font-semibold tracking-tight">Ready to use the tracker?</h2>
+            <p className="mt-2 text-muted-foreground">Everything saves locally — refresh-safe and demo-friendly.</p>
           </div>
-          <Button asChild className="min-w-44">
+          <Button asChild size="lg" className="min-w-44">
             <Link href="/tracker">Open tracker</Link>
           </Button>
         </div>

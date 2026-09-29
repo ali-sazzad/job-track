@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 import { SiteHeader } from "@/components/site-header";
@@ -6,26 +7,20 @@ import { SiteFooter } from "@/components/site-footer";
 import { Toaster } from "@/components/ui/sonner";
 import { PrefsSync } from "@/components/prefs-sync";
 import { SkipToContent } from "@/components/skip-to-content";
+import { ThemeProvider } from "@/components/theme-provider";
+import { SITE_DESC, SITE_NAME, SITE_URL } from "@/lib/site";
 
-const SITE_NAME = "JobTrack";
-const SITE_DESC =
-  "A recruiter-friendly job application tracker with pipeline, filters, insights, and local persistence.";
+const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
+const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://job-track-ruby.vercel.app/"), // replace with your Vercel URL after deploy
+  metadataBase: new URL(SITE_URL),
   title: {
     default: SITE_NAME,
     template: `%s • ${SITE_NAME}`,
   },
   description: SITE_DESC,
-
-  // Good default for SEO crawl
-  robots: {
-    index: true,
-    follow: true,
-  },
-
-  // Nice share previews
+  robots: { index: true, follow: true },
   openGraph: {
     type: "website",
     siteName: SITE_NAME,
@@ -39,26 +34,27 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
-      <body className="min-h-dvh bg-background text-foreground antialiased">
-        <PrefsSync />
+    // suppressHydrationWarning: next-themes / PrefsSync set attributes on <html> before hydration
+    <html lang="en" data-scroll-behavior="smooth" suppressHydrationWarning>
+      <body className={`${geistSans.variable} ${geistMono.variable} min-h-dvh font-sans antialiased`}>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <PrefsSync />
 
-        {/* A11y: keyboard users can skip repeated navigation */}
-        <SkipToContent />
+          {/* A11y: keyboard users can skip repeated navigation */}
+          <SkipToContent />
 
-        <SiteHeader />
+          <SiteHeader />
 
-        {/* A11y: main landmark with a stable skip target */}
-        <main id="content" className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-          {children}
-        </main>
+          {/* A11y: main landmark with a stable skip target */}
+          <main id="content" tabIndex={-1} className="mx-auto max-w-6xl px-4 py-10 outline-none sm:px-6">
+            {children}
+          </main>
 
-        <SiteFooter />
-        <Toaster richColors />
+          <SiteFooter />
+          <Toaster richColors closeButton />
+        </ThemeProvider>
       </body>
     </html>
   );

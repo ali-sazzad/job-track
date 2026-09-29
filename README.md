@@ -1,151 +1,65 @@
 # JobTrack — Job Application Tracker (Next.js + TypeScript + shadcn/ui)
-View here live: https://job-track-ruby.vercel.app/
 
-JobTrack is a frontend-only job application tracker designed to feel like a real internal tool.  
-It supports CRUD, fast filtering, lightweight insights, and persistent storage using localStorage — deployable to Vercel.
+Live: https://job-track-ruby.vercel.app/
 
-This project is intentionally built to maximize junior hiring signals: routing, reusable components, validation, UX states, accessibility patterns, and clean architecture.
+A frontend-only job application tracker designed to feel like a real internal tool: CRUD, fast filtering, a pipeline board, lightweight insights, and persistent storage in `localStorage`. Deployable to Vercel with zero config.
 
----
+Rebuild of [ali-sazzad/job-track](https://github.com/ali-sazzad/job-track) on Next.js 16.3 / React 19.2 / Tailwind v4.
 
-## Problem → Solution
+## Features
 
-**Problem:** Job searching gets messy fast — scattered notes, forgotten follow-ups, no clear view of your pipeline.  
-**Solution:** JobTrack provides a clean pipeline, searchable list/board layout, and lightweight insights — all stored locally so it works without a backend.
+- **Tracker**: add / edit / delete applications, validated form (Enter submits, focus jumps to the first invalid field), delete with **Undo** toast
+- **Search** (company, role, notes) + **status filter** + **sort** (newest, oldest, company, pipeline order)
+- **Pipeline board** grouped by status, with empty and filtered-to-zero states
+- **Insights**: KPI totals, response rate, status share bars (pure CSS), top companies
+- **Settings**: density (comfort/compact), theme (system/light/dark), default sort, JSON/CSV export, clear data, factory reset
+- **Accessibility**: skip link, labelled fields, `aria-invalid` + `aria-describedby` errors, `aria-current` nav, AlertDialogs instead of `confirm()`
 
----
+## Tech stack
 
-## Key Features
+Next.js (App Router, React Compiler) · React · TypeScript · Tailwind CSS v4 · shadcn/ui (Radix) · Sonner · next-themes · lucide-react
 
-### Core Product
-- ✅ Add / Edit / Delete job applications (CRUD)
-- ✅ Search + filter by status + sort
-- ✅ Pipeline board grouped by status
-- ✅ Insights page: KPI totals + status breakdown bars + top companies
+## localStorage keys
 
-### UX & Polish
-- ✅ Multi-page routing (App Router): Home, Tracker, Insights, Settings
-- ✅ Reusable component system via shadcn/ui (Button, Card, Input, Badge, Dialog, Skeleton, Toast)
-- ✅ Empty states + filtered-to-zero state + success toasts
-- ✅ Safe destructive actions via AlertDialog (no `confirm()`)
+| Key | Contents |
+| --- | --- |
+| `jobtrack.apps.v1` | Array of applications (company, role, status, dates, link, notes, timestamps) |
+| `jobtrack.prefs.v1` | `{ density, defaultSort }` |
+| `theme` | Theme choice (managed by next-themes) |
 
-### Accessibility & Performance
-- ✅ Keyboard-first UI (Radix primitives via shadcn/ui)
-- ✅ Focus-visible rings and semantic structure
-- ✅ Lightweight CSS bars (no chart libraries)
-- ✅ Frontend-only: fast dev loop and easy deploy
+The keys match the original project, so existing data carries over.
 
----
+## Architecture notes
 
-## Tech Stack
+- **`src/lib/storage.ts`**: a small external store built on `useSyncExternalStore`. Every component reading a key shares one source of truth, so changing density in Settings updates the whole app immediately. It also syncs across tabs through the `storage` event. The server snapshot is the default value, so SSR and hydration always agree. `useHydrated()` shows skeletons instead of briefly flashing "no data".
+- **`src/lib/types.ts`**: the data model plus runtime guards (`parseApps`, `parsePrefs`). localStorage is user-editable, so corrupted or old data degrades gracefully instead of crashing.
+- **`src/lib/jobs.ts`**: pure helpers for filtering and sorting, grouping, counting, demo data, and CSV export (with formula-injection protection).
 
-- Next.js (App Router)
-- React + TypeScript
-- Tailwind CSS
-- shadcn/ui (Radix + Tailwind)
-- Sonner toasts
+```
+src/
+  app/            layout, home, tracker/, insights/, settings/, robots.ts, sitemap.ts
+  components/     site header/footer, prefs-sync, confirm-dialog, native-select,
+                  status-badge, stat-card, pipeline-preview, tracker/, ui/ (shadcn)
+  lib/            types, storage, jobs, site, utils
+```
 
----
-
-## localStorage: What’s stored and why
-
-This project uses localStorage to simulate “real product behavior” without a backend:
-
-- **`jobtrack.apps.v1`**  
-  Stores the array of job applications (company, role, status, notes, timestamps).  
-  **Why:** Your tracker data persists after refresh and can be demoed offline.
-
-- **`jobtrack.prefs.v1`**  
-  Stores user preferences like density (compact/comfort) and default sort.  
-  **Why:** A real app remembers user preferences across sessions.
-
----
-
-## Folder Structure (App Router)
-
-<br>|_src/
-<br>&nbsp;|_app/
-<br>&nbsp;&nbsp;|__page.tsx
-<br>&nbsp;&nbsp;|__layout.tsx
-<br>&nbsp;&nbsp;|__globals.css
-<br>&nbsp;&nbsp;|__tracker/
-<br>&nbsp;&nbsp;&nbsp;|__page.tsx
-<br>&nbsp;&nbsp;&nbsp;|__tracker-client.tsx
-<br>&nbsp;&nbsp;&nbsp;|__loading.tsx
-<br>&nbsp;&nbsp;|__insights/
-<br>&nbsp;&nbsp;&nbsp;|__page.tsx
-<br>&nbsp;&nbsp;&nbsp;|__insights-client.tsx
-<br>&nbsp;&nbsp;&nbsp;|__loading.tsx
-<br>&nbsp;&nbsp;|__settings/
-<br>&nbsp;&nbsp;&nbsp;|__page.tsx
-<br>&nbsp;&nbsp;&nbsp;|__settings-client.tsx
-<br>&nbsp;|__components/
-<br>&nbsp;&nbsp;|__site-header.tsx
-<br>&nbsp;&nbsp;|__site-footer.tsx
-<br>&nbsp;&nbsp;|__prefs-sync.tsx
-<br>&nbsp;&nbsp;|__ui/ (shadcn components)
-<br>&nbsp;|__lib/
-<br>&nbsp;&nbsp;|__types.ts
-<br>&nbsp;&nbsp;|__storage.ts
-<br>&nbsp;&nbsp;|__utils.ts
-<br>
-
----
-
-## Run Locally
+## Run locally
 
 ```bash
 npm install
-npm run dev
-Open: http://localhost:3000
+npm run dev     # http://localhost:3000
+npm run build && npm start
 ```
----
-## What I Learned
 
-- *How to build a multi-page App Router project with shared layout*
+Optional: set `NEXT_PUBLIC_SITE_URL` to your production URL for metadata, robots and sitemap. On Vercel, the project's production URL is used automatically.
 
-- *How to design a reusable component system with shadcn/ui*
+## Fixes over the original
 
-- *How to implement frontend persistence (localStorage) safely*
-
-- *How to ship UX states: empty, filtered-to-zero, success feedback, safe destructive flows*
-
-- *How to keep UI accessible with keyboard navigation and focus management primitives*
-
-## Interview Talking Points (10)
-
--***App Router structure: separated marketing vs product pages for clarity and SEO.***
-
--***Client/server boundary: interactive pages use use client; static shells remain server-rendered.***
-
--***Persistence choice: localStorage simulates backend persistence without adding complexity.***
-
--***Data model: strongly typed JobApplication keeps UI predictable and reduces bugs.***
-
--***Hook design: useLocalStorageState loads once and safely recovers from corrupted JSON.***
-
--***UX states: intentionally designed empty and filtered-to-zero states to avoid “dead UI”.***
-
--***Accessible destructive actions: replaced confirm() with AlertDialog for focus + intent clarity.***
-
--***Performance tradeoff: avoided heavy charts; used CSS bars for fast insights visuals.***
-
--***Reusable components: consistent design language via shadcn/ui; no “UI soup”.***
-
--***Preference sync: density stored + applied globally using a single PrefsSync component.***
-
-## Hiring Manager Checklist (what this proves)
-
-✅ *Can build a real, deployable Next.js app (routing + layout)*
-
-✅ *Understands component systems (reusability + consistency)*
-
-✅ *Can manage state and persistence without Redux*
-
-✅ *Can implement validation and user feedback*
-
-✅ *Thinks about accessibility and safe UI patterns*
-
-✅ *Designs clean responsive layouts with strong hierarchy*
-
----
+- Tailwind v4 theme tokens are mapped via `@theme inline`. In the original, `bg-primary`, `bg-background` and similar classes didn't resolve.
+- No hydration mismatches: the original read localStorage during the initial render.
+- Preferences propagate live. The original `PrefsSync` kept its own copy and only updated on reload.
+- The saved default sort is actually applied on the Tracker page. In the original it was read before storage loaded.
+- "Status" sort follows pipeline order instead of alphabetical order.
+- Sitemap and robots URLs no longer contain a double slash.
+- Insights bars show each status's share of the total, and the missing "Rejected" KPI is added.
+- Factory reset really removes the keys. The original immediately wrote the defaults back.

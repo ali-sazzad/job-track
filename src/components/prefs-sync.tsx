@@ -1,19 +1,17 @@
 "use client";
 
-import * as React from "react";
-import { DEFAULT_PREFS, UserPrefs } from "@/lib/types";
-import { STORAGE_KEYS, useLocalStorageState } from "@/lib/storage";
+import { useEffect } from "react";
+import { usePrefs } from "@/lib/storage";
 
 /**
  * PrefsSync
- * - Reads saved prefs from localStorage
+ * - Subscribes to saved prefs (shared store, so Settings changes apply instantly)
  * - Applies global attributes (density) to <html>
- * - Keeps UI consistent across pages without needing Context
  */
 export function PrefsSync() {
-  const [prefs] = useLocalStorageState<UserPrefs>(STORAGE_KEYS.prefs, DEFAULT_PREFS);
+  const [prefs] = usePrefs();
 
-  React.useEffect(() => {
+  useEffect(() => {
     document.documentElement.dataset.density = prefs.density;
   }, [prefs.density]);
 

@@ -7,6 +7,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { Toaster } from "@/components/ui/sonner";
 import { PrefsSync } from "@/components/prefs-sync";
 import { SkipToContent } from "@/components/skip-to-content";
+import { ScrollToTop } from "@/components/scroll-to-top";
 import { ThemeProvider } from "@/components/theme-provider";
 import { SITE_DESC, SITE_NAME, SITE_URL } from "@/lib/site";
 
@@ -53,7 +54,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           </main>
 
           <SiteFooter />
-          <Toaster richColors closeButton />
+          <ScrollToTop />
+          {/* Lift toasts above the scroll-to-top button so they never overlap it. */}
+          <Toaster richColors closeButton offset={{ bottom: 88 }} mobileOffset={{ bottom: 88 }} />
         </ThemeProvider>
       </body>
     </html>

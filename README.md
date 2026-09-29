@@ -13,7 +13,10 @@ Rebuild of [ali-sazzad/job-track](https://github.com/ali-sazzad/job-track) on Ne
 - **Pipeline board** grouped by status, with empty and filtered-to-zero states
 - **Insights**: KPI totals, response rate, status share bars (pure CSS), top companies
 - **Settings**: density (comfort/compact), theme (system/light/dark), default sort, JSON/CSV export, clear data, factory reset
-- **Accessibility**: skip link, labelled fields, `aria-invalid` + `aria-describedby` errors, `aria-current` nav, AlertDialogs instead of `confirm()`
+- **Dark mode**: a sun/moon toggle in the header, kept in sync with the Theme setting and remembered across visits. Icons swap through CSS, so there's no flash on load.
+- **Navigation**: a floating scroll-to-top button appears after you scroll down. Clicking the logo, or the nav link for the page you're on, scrolls back to the top.
+- **App icons**: a "JT" favicon that adapts to light and dark browser themes (`icon.svg`), plus `favicon.ico` and a home-screen `apple-icon.png`
+- **Accessibility**: skip link, labelled fields, `aria-invalid` + `aria-describedby` errors, `aria-current` nav, AlertDialogs instead of `confirm()`, and motion that respects `prefers-reduced-motion`
 
 ## Tech stack
 
@@ -37,10 +40,12 @@ The keys match the original project, so existing data carries over.
 
 ```
 src/
-  app/            layout, home, tracker/, insights/, settings/, robots.ts, sitemap.ts
-  components/     site header/footer, prefs-sync, confirm-dialog, native-select,
-                  status-badge, stat-card, pipeline-preview, tracker/, ui/ (shadcn)
-  lib/            types, storage, jobs, site, utils
+  app/            layout, home, tracker/, insights/, settings/, robots.ts, sitemap.ts,
+                  icon.svg, favicon.ico, apple-icon.png
+  components/     site header/footer, theme-toggle, scroll-to-top, prefs-sync,
+                  confirm-dialog, native-select, status-badge, stat-card,
+                  pipeline-preview, tracker/, ui/ (shadcn)
+  lib/            types, storage, jobs, scroll, site, utils
 ```
 
 ## Run locally

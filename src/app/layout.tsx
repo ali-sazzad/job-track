@@ -27,12 +27,15 @@ export const metadata: Metadata = {
     siteName: SITE_NAME,
     title: SITE_NAME,
     description: SITE_DESC,
+    images: [{ url: "icons/icon-512.png", width: 512, height: 512, alt: `${SITE_NAME} logo` }],
   },
   twitter: {
-    card: "summary_large_image",
+    card: "summary",
     title: SITE_NAME,
     description: SITE_DESC,
+    images: ["icons/icon-512.png"],
   },
+  appleWebApp: { capable: true, title: SITE_NAME, statusBarStyle: "default" },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

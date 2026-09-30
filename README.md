@@ -15,7 +15,7 @@ Rebuild of [ali-sazzad/job-track](https://github.com/ali-sazzad/job-track) on Ne
 - **Settings**: density (comfort/compact), theme (system/light/dark), default sort, JSON/CSV export, JSON import (merges by id; newest edit wins), clear data, factory reset
 - **Dark mode**: a sun/moon toggle in the header, kept in sync with the Theme setting and remembered across visits. Icons swap through CSS, so there's no flash on load.
 - **Navigation**: a floating scroll-to-top button appears after you scroll down. Clicking the logo, or the nav link for the page you're on, scrolls back to the top.
-- **App icons**: a "JT" favicon that adapts to light and dark browser themes (`icon2.svg`), an `.ico` fallback (`icon1.ico`, plus `public/favicon.ico` for browsers that request it directly), and a home-screen `apple-icon.png`
+- **App icons**: a "JT" favicon that adapts to light and dark browser themes (`icon2.svg`), an `.ico` fallback (`icon1.ico`, plus `public/favicon.ico` for browsers that request it directly), and a home-screen `apple-icon.png`. The same logo is rendered to PNG (`icons/icon-192.png`, `icon-512.png`, `icon-maskable-512.png`) for the web app manifest and as the Open Graph / Twitter share image
 - **Accessibility**: skip link, labelled fields, `aria-invalid` + `aria-describedby` errors, `aria-current` nav, AlertDialogs instead of `confirm()`, and motion that respects `prefers-reduced-motion`
 
 ## Tech stack
@@ -41,7 +41,7 @@ The keys match the original project, so existing data carries over.
 ```
 src/
   app/            layout, home, tracker/, insights/, settings/, robots.ts, sitemap.ts,
-                  icon1.ico, icon2.svg, apple-icon.png
+                  icon1.ico, icon2.svg, apple-icon.png, manifest.ts, icons/[file] (PNG logo)
   components/     site header/footer, theme-toggle, scroll-to-top, prefs-sync,
                   confirm-dialog, native-select, status-badge, stat-card,
                   pipeline-preview, tracker/, ui/ (shadcn)
